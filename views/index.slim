@@ -1,5 +1,11 @@
 .message = @message
 
 form action="/" method="POST"
-  input type="text" name="task"
+  input type="text" name="url"
   input.button type="submit" value="Make it short"
+
+ul
+  - @urls.data.each do |url|
+    li
+      a href=(url['attributes']['short'])
+        = url['attributes']['short']
