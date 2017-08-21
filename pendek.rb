@@ -26,7 +26,7 @@ post '/' do
 end
 
 get '/:short' do
-  uri = URI.parse(settings.api["base"] + "/stats/#{params[:short]}")
+  uri = URI.parse(settings.api["base"] + "urls/#{params[:short]}")
   response = Net::HTTP.get_response(uri)
   @stats = OpenStruct.new(JSON.parse(response.body))
 

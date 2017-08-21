@@ -1,11 +1,25 @@
-.message = @message
+.jumbotron
+  h1 URL SHORT
+  form action="/" method="POST" class="form-inline" role="form"
+    .row.form-group
+      .input-group.input-group-lg.col-md-12
+        input type="text" name="url" class="form-control" placeholder="http://www.target.url/"
+        span class = "input-group-btn"
+          button type="submit" class="btn btn-primary" GO
 
-form action="/" method="POST"
-  input type="text" name="url"
-  input.button type="submit" value="Make it short"
+.container
+  .main-content
+    .row
+      .col-lg-12
+        h1 Latest URLs
 
-ul
-  - @urls.data.each do |url|
-    li
-      a href=(url['attributes']['short'])
-        = url['attributes']['short']
+    .message = @message
+
+    .row
+      - @urls.data.each do |url|
+        .item.col-xs-12.col-sm-6.col-md-3
+          .link
+            a href=(url['attributes']['short_url'])
+              = url['attributes']['short_url']
+          .stats
+            a href="#{url['id']}" view stats
