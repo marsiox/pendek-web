@@ -7,9 +7,15 @@ require 'slim'
 config_file 'config/application.yml'
 
 get '/' do
-  @urls = Pendek::HttpClient.new(settings.api["base"] + "urls").get
+  response = Pendek::HttpClient.new(settings.api["base"] + "urls").get
   @message = params['message']
-  slim :index
+
+  if response.errors
+    @message = "Error: #{response.errors[0]['title']}"
+  else
+    @urls = response
+    slim :index
+  end
 end
 
 post '/' do
@@ -26,6 +32,12 @@ post '/' do
 end
 
 get '/:short' do
-  @stats = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}").get
-  slim :stats
+  response = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}").get
+
+  if response.errors
+    @message = "Error: #{response.errors[0]['title']}"
+  else
+    @stats = response
+    slim :stats
+  end
 end

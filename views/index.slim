@@ -11,17 +11,18 @@
 
   .main-content
     - if @message
-      .alert.alert-info = @message
+      .container
+        .alert.alert-info = @message
 
     .row
       .col-lg-12
         h1 Latest URLs
-
-    .row
-      - @urls.data.each do |url|
-        .item.col-xs-12.col-sm-6.col-md-3
-          .link
-            a href=(url['attributes']['short_url'])
-              = url['attributes']['short_url']
-          .stats
-            a href="#{url['id']}" view stats
+    - if @urls
+      .row
+        - @urls.data.each do |url|
+          .item.col-xs-12.col-sm-6.col-md-3
+            .link
+              a href=(url['attributes']['short_url'])
+                = url['attributes']['short_url']
+            .stats
+              a href="#{url['id']}" view stats
