@@ -12,7 +12,7 @@ get '/' do
   uri = URI.parse(settings.api["base"] + "/urls")
   response = Net::HTTP.get_response(uri)
   @urls = OpenStruct.new(JSON.parse(response.body))
-
+  @message = params['message']
   slim :index
 end
 
@@ -20,9 +20,18 @@ post '/' do
   uri = URI.parse(settings.api["base"] + "/urls")
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Post.new(uri.path, initheader = {"Content-Type" => "application/json"})
+
   request.body = { data: { full: params["url"] } }.to_json
-  response = http.request(request)
-  redirect "/"
+
+  response = OpenStruct.new(JSON.parse(http.request(request).body))
+
+  if response.errors
+    message = "Error: #{response.errors[0]['title']}"
+  else
+    message = "Success"
+  end
+
+  redirect "/?message=#{message}"
 end
 
 get '/:short' do

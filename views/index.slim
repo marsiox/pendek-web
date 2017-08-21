@@ -8,12 +8,14 @@
           button type="submit" class="btn btn-primary" GO
 
 .container
+
   .main-content
+    - if @message
+      .alert.alert-info = @message
+
     .row
       .col-lg-12
         h1 Latest URLs
-
-    .message = @message
 
     .row
       - @urls.data.each do |url|
