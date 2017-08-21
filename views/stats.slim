@@ -4,7 +4,7 @@
       .col-sm-12
 
         h1
-          == "Stats around #{@stats.data['attributes']['short']}"
+          == "Stats around #{@stats.data['id']}"
 
         .row
           .col-sm-2
@@ -17,8 +17,8 @@
             .panel.panel-default
               .panel-heading Target URL
               .panel-body
-                a href=(@stats.data['attributes']['full'])
-                  = @stats.data['attributes']['full']
+                a href=(@stats.data['attributes']['full_url'])
+                  = @stats.data['attributes']['full_url']
 
         h2 Referer Breakdown
 
