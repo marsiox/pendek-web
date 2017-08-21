@@ -1,29 +1,20 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'lib/http_client'
 require 'sinatra'
 require "sinatra/config_file"
 require 'slim'
-require "net/http"
-require "uri"
-require 'json'
-require 'ostruct'
 
 config_file 'config/application.yml'
 
 get '/' do
-  uri = URI.parse(settings.api["base"] + "/urls")
-  response = Net::HTTP.get_response(uri)
-  @urls = OpenStruct.new(JSON.parse(response.body))
+  @urls = Pendek::HttpClient.new(settings.api["base"] + "urls").get
   @message = params['message']
   slim :index
 end
 
 post '/' do
-  uri = URI.parse(settings.api["base"] + "/urls")
-  http = Net::HTTP.new(uri.host, uri.port)
-  request = Net::HTTP::Post.new(uri.path, initheader = {"Content-Type" => "application/json"})
-
-  request.body = { data: { full: params["url"] } }.to_json
-
-  response = OpenStruct.new(JSON.parse(http.request(request).body))
+  post_params = { data: { full: params["url"] } }
+  response = Pendek::HttpClient.new(settings.api["base"] + "urls").post(post_params)
 
   if response.errors
     message = "Error: #{response.errors[0]['title']}"
@@ -35,9 +26,6 @@ post '/' do
 end
 
 get '/:short' do
-  uri = URI.parse(settings.api["base"] + "urls/#{params[:short]}")
-  response = Net::HTTP.get_response(uri)
-  @stats = OpenStruct.new(JSON.parse(response.body))
-
+  @stats = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}").get
   slim :stats
 end
