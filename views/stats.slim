@@ -47,7 +47,7 @@
           tbody
             - @stats.data['attributes']['stats']['last_visits'].each do |item|
               tr
-                td = item['created_at']
+                td = DateTime.parse(item['created_at']).strftime("%d %b %Y, %I:%m %p")
                 td = item['ip_address']
                 td
                   a href=(item['http_referer'])
