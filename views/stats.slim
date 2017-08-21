@@ -2,7 +2,54 @@
   .main-content
     .row
       .col-sm-12
+
         h1
           == "Stats around #{@stats.data['attributes']['short']}"
-        .stats
-          = @stats
+
+        .row
+          .col-sm-2
+            .panel.panel-default
+              .panel-heading All visits
+              .panel-body
+                = @stats.data['attributes']['stats']['all_visits']
+
+          .col-sm-10
+            .panel.panel-default
+              .panel-heading Target URL
+              .panel-body
+                a href=(@stats.data['attributes']['full'])
+                  = @stats.data['attributes']['full']
+
+        h2 Referer Breakdown
+
+        table.table.table-striped
+          thead
+            tr
+              th Referer
+              th Visits
+          tbody
+            - @stats.data['attributes']['stats']['by_http_referer'].each do |item|
+              tr
+                td
+                  a href=(item['http_referer'])
+                    = item['http_referer']
+                td = item['visits']
+
+        h2 Last Visits
+
+        table.table.table-striped
+          thead
+            tr
+              td Date
+              th IP
+              th Referer
+              th Browser
+          tbody
+            - @stats.data['attributes']['stats']['last_visits'].each do |item|
+              tr
+                td = item['created_at']
+                td = item['ip_address']
+                td
+                  a href=(item['http_referer'])
+                    = item['http_referer']
+                td = item['user_agent']
