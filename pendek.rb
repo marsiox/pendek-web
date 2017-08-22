@@ -7,23 +7,26 @@ require 'slim'
 config_file 'config/application.yml'
 
 get '/' do
-  response = Pendek::HttpClient.new(settings.api["base"] + "urls").get
-  @message = params['message']
+  client = Pendek::HttpClient.new(settings.api["base"] + "urls")
+  client.get
 
-  if response.errors
-    @message = "Error: #{response.errors[0]['title']}"
+  @message = params["message"]
+
+  if client.error?
+    @message = "Error: #{client.errors[0]['title']}"
   else
-    @urls = response
+    @urls = client.response
     slim :index
   end
 end
 
 post '/' do
   post_params = { data: { full: params["url"] } }
-  response = Pendek::HttpClient.new(settings.api["base"] + "urls").post(post_params)
+  client = Pendek::HttpClient.new(settings.api["base"] + "urls")
+  client.post(post_params)
 
-  if response.errors
-    message = "Error: #{response.errors[0]['title']}"
+  if client.error?
+    message = "Error: #{client.errors[0]['title']}"
   else
     message = "Success"
   end
@@ -32,12 +35,13 @@ post '/' do
 end
 
 get '/:short' do
-  response = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}").get
+  client = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}")
+  client.get
 
-  if response.errors
-    @message = "Error: #{response.errors[0]['title']}"
+  if client.error?
+    @message = "Error: #{client.errors[0]['title']}"
   else
-    @stats = response
+    @stats = client.response
     slim :stats
   end
 end

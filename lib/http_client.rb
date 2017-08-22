@@ -7,6 +7,8 @@ module Pendek
 
   class HttpClient
 
+    attr_reader :response, :errors
+
     def initialize(endpoint)
       @endpoint = endpoint
     end
@@ -22,7 +24,7 @@ module Pendek
         response = error_response
       end
 
-      OpenStruct.new(JSON.parse(response))
+      @response = parse_response(response)
     end
 
     def post(params, headers = {})
@@ -37,7 +39,7 @@ module Pendek
         response = error_response
       end
 
-      OpenStruct.new(JSON.parse(response))
+      @response = parse_response(response)
     end
 
     def error_response
@@ -46,6 +48,18 @@ module Pendek
 
     def init_header
       { "Content-Type" => "application/json" }
+    end
+
+    def parse_response(json)
+      OpenStruct.new(JSON.parse(json))
+    end
+
+    def error?
+      @response.respond_to?(:errors)
+    end
+
+    def errors
+      @response.errors if error?
     end
 
   end
