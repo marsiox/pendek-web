@@ -21,8 +21,8 @@
       .row
         - @urls.data.each do |url|
           .item.col-xs-12.col-sm-6.col-md-3
-            .link
+            span.link
               a href=(url['attributes']['short_url'])
                 = url['attributes']['short_url']
-            .stats
-              a href="#{url['id']}" view stats
+            span.stats
+              a.btn.btn-default.btn-xs href="#{url['id']}" view stats
