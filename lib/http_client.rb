@@ -11,27 +11,41 @@ module Pendek
       @endpoint = endpoint
     end
 
-    def get
+    def get(headers = {})
       begin
         uri = URI.parse(@endpoint)
         http = Net::HTTP.new(uri.host, uri.port)
-        request = Net::HTTP::Get.new(uri.path, initheader = {"Content-Type" => "application/json"})
-        OpenStruct.new(JSON.parse(http.request(request).body))
+        request = Net::HTTP::Get.new(uri.path, init_header.merge(headers))
+        response = http.request(request).body
+
       rescue Errno::ECONNREFUSED
-        OpenStruct.new(JSON.parse({ errors: [{ title: "Connection refused" }]}.to_json))
+        response = error_response
       end
+
+      OpenStruct.new(JSON.parse(response))
     end
 
-    def post(params)
+    def post(params, headers = {})
       begin
         uri = URI.parse(@endpoint)
         http = Net::HTTP.new(uri.host, uri.port)
-        request = Net::HTTP::Post.new(uri.path, initheader = {"Content-Type" => "application/json"})
+        request = Net::HTTP::Post.new(uri.path, init_header.merge(headers))
         request.body = params.to_json
-        OpenStruct.new(JSON.parse(http.request(request).body))
+        response = http.request(request).body
+
       rescue Errno::ECONNREFUSED
-        OpenStruct.new(JSON.parse({ errors: [{ title: "Connection refused" }]}.to_json))
+        response = error_response
       end
+
+      OpenStruct.new(JSON.parse(response))
+    end
+
+    def error_response
+      { errors: [{ title: "Connection refused" }]}.to_json
+    end
+
+    def init_header
+      { "Content-Type" => "application/json" }
     end
 
   end
