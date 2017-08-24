@@ -2,16 +2,19 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'lib/http_client'
 require 'sinatra'
 require "sinatra/config_file"
+require 'sinatra/flash'
 require 'slim'
 require 'byebug'
 
 config_file 'config/application.yml'
 
+enable :sessions
+
 get '/' do
   client = Pendek::HttpClient.new(settings.api["base"] + "urls")
   client.get
 
-  @message = params["message"]
+  @message = flash[:message]
 
   if client.error?
     @message = "Error: #{client.errors[0]['title']}"
@@ -27,12 +30,12 @@ post '/' do
   client.post(post_params)
 
   if client.error?
-    message = "Error: #{client.errors[0]['title']}"
+    flash[:message] = "Error: #{client.errors[0]['title']}"
   else
-    message = "Success"
+    flash[:message] = "Your short URL: #{client.response.data['attributes']['short_url']}"
   end
 
-  redirect "/?message=#{message}"
+  redirect "/"
 end
 
 get '/stats/:short' do

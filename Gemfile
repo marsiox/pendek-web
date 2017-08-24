@@ -7,6 +7,7 @@ end
 
 gem 'sinatra', '~> 1.4', '>= 1.4.7'
 gem 'sinatra-contrib'
+gem 'sinatra-flash'
 gem 'slim'
 gem 'json'
 gem 'rest-client'
