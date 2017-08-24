@@ -3,6 +3,7 @@ require 'lib/http_client'
 require 'sinatra'
 require "sinatra/config_file"
 require 'slim'
+require 'byebug'
 
 config_file 'config/application.yml'
 
@@ -34,7 +35,7 @@ post '/' do
   redirect "/?message=#{message}"
 end
 
-get '/:short' do
+get '/stats/:short' do
   client = Pendek::HttpClient.new(settings.api["base"] + "urls/#{params[:short]}")
   client.get
 
